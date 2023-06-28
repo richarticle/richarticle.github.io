@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!-- Clone from https://clock.0123456789.tw/ -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Breathing Timer</title>
+    <style> 
+    body {
+      background-color: #f7f7f7;
+      text-align: center;
+      padding-top: 20px;
+    }
+    
+    #timer {
+      font-size: 40px;
+      color: #ff0000;
+    }
+    
+    .formc2 {
+      width: 100%;
+      height: 40px;
+      background-color: #3b5998;
+      color: #fff;
+      -webkit-appearance: none;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      max-width: 400px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    </style>
+ 
+  </head>
+  <body>
+   <h1>Breathing Timer</h1>
+    <label class="title">Inhale</label><br>
+    <input type="number" id="inhaleSeconds" value="4"  class="formc2"><br>
+    <label class="title">Hold</label><br>
+    <input type="number" id="hold1Seconds" value="4" class="formc2"><br>
+    <label class="title">Exhale</label><br>
+    <input type="number" id="exhaleSeconds" value="6"  class="formc2"><br>
+    <label class="title">Hold</label><br>
+    <input type="number" id="hold2Seconds" value="2" class="formc2"><br><br>
+
+    <label class="title">Repeat Times:</label><br>
+    <input type="number" id="repeatTimes" value="100" class="formc2"><br><br><br>
+
+    <input bypte="button" value="Start" id="startStop" class="formc2" onclick="startStopTimer()"><br>
+
+    <div id="timer"></div>
+    
+    <script>
+      var inhaleSeconds = document.getElementById("inhaleSeconds").value
+      var hold1Seconds = document.getElementById("hold1Seconds").value
+      var exhaleSeconds = document.getElementById("exhaleSeconds").value
+      var hold2Seconds = document.getElementById("hold2Seconds").value
+      var repeatTimes = document.getElementById("repeatTimes").value
+      var stage = 0
+      var stageName = "Inhale"
+      var round = 0
+      var seconds = inhaleSeconds
+      var timerId
+      var running = false
+      
+      function startStopTimer() {
+        if (running == false) {
+          startTimer()
+          startStop.value = "Stop"
+          running = true
+        } else {
+          stopTimer()
+          startStop.value = "Start"
+          running = false
+        }
+      }
+
+      function startTimer() {
+        stopTimer()
+
+        inhaleSeconds = document.getElementById("inhaleSeconds").value
+        hold1Seconds = document.getElementById("hold1Seconds").value
+        exhaleSeconds = document.getElementById("exhaleSeconds").value
+        hold2Seconds = document.getElementById("hold2Seconds").value
+        repeatTimes = document.getElementById("repeatTimes").value
+        stage = 0
+        stageName = "Inhale"
+        round = 0
+        seconds = inhaleSeconds
+        
+        timerId = setInterval(updateTimer, 1000)
+        play("inhale.mp3")
+      }
+      
+      function stopTimer() {
+        clearInterval(timerId);
+      }
+      
+      function updateTimer() {
+        seconds--;
+        if (seconds <= 0) {
+          stage = (stage+1)%4
+          switch (stage) {
+            case 0:
+              round++
+              if (round >= repeatTimes) {
+                startStopTimer()
+                document.getElementById("timer").innerHTML = "Finished"
+                return
+              }
+              seconds = inhaleSeconds
+              play("inhale.mp3")
+              stageName = "Inhale"
+              break
+            case 1:
+              seconds = hold1Seconds
+              if (seconds == 0) {
+                break
+              }
+              play("hold.mp3")
+              stageName = "Hold"
+              break
+            case 2:
+              seconds = exhaleSeconds
+              play("exhale.mp3")
+              stageName = "Exhale"
+              break
+            case 3:
+              seconds = hold2Seconds
+              if (seconds == 0) {
+                break
+              }
+              play("hold.mp3")
+              stageName = "Hold"
+              break
+          }
+        }
+        document.getElementById("timer").innerHTML = "Round " + round + ": " + stageName +  " " + seconds;
+      }
+
+      function play(file) {
+        var audio = new Audio(file)
+        audio.play();
+      }
+    </script>
+</body>
+</html>     
+
+      
