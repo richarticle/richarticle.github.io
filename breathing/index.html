@@ -53,7 +53,7 @@
     <input bypte="button" value="Start" id="startStop" class="formc2" onclick="startStopTimer()"><br>
 
     <div id="timer"></div>
-    
+    <script type="text/javascript" src="ios6-timers.js"></script>
     <script>
       var inhaleSeconds = document.getElementById("inhaleSeconds").value
       var hold1Seconds = document.getElementById("hold1Seconds").value
@@ -66,9 +66,15 @@
       var seconds = inhaleSeconds
       var timerId
       var running = false
+      var inhale
+      var exhale
+      var hold
       
       function startStopTimer() {
         if (running == false) {
+          inhale = new Audio("inhale.mp3")
+          exhale = new Audio("exhale.mp3")
+          hold = new Audio("hold.mp3")
           startTimer()
           startStop.value = "Stop"
           running = true
@@ -93,7 +99,7 @@
         seconds = inhaleSeconds
         
         timerId = setInterval(updateTimer, 1000)
-        play("inhale.mp3")
+        inhale.play()
       }
       
       function stopTimer() {
@@ -113,7 +119,7 @@
                 return
               }
               seconds = inhaleSeconds
-              play("inhale.mp3")
+              inhale.play()
               stageName = "Inhale"
               break
             case 1:
@@ -121,12 +127,12 @@
               if (seconds == 0) {
                 break
               }
-              play("hold.mp3")
+              hold.play()
               stageName = "Hold"
               break
             case 2:
               seconds = exhaleSeconds
-              play("exhale.mp3")
+              exhale.play()
               stageName = "Exhale"
               break
             case 3:
@@ -134,7 +140,7 @@
               if (seconds == 0) {
                 break
               }
-              play("hold.mp3")
+              hold.play()
               stageName = "Hold"
               break
           }
